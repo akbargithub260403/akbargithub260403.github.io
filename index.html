@@ -365,7 +365,11 @@
                 </div>
 
                 <div class="col-md-6">
-                    <form>
+                    <div class="alert alert-info alert-dismissible fade show d-none myAlert" role="alert">
+                        <strong>Terima Kasih!</strong> Pesan anda sudah saya terima.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <form name="contact-form-portofolio">
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Nama</label>
                             <input type="text" name="nama" class="form-control" id="exampleInputEmail1"
@@ -381,7 +385,11 @@
                             <textarea class="form-control" name="pesan" id="exampleFormControlTextarea1"
                                 rows="3"></textarea>
                         </div>
-                        <button class="btn btn-primary">Kirim</button>
+                        <button type="submit" class="btn btn-primary btn-kirim">Kirim</button>
+                        <button class="btn btn-primary d-none btn-loading" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Loading...
+                        </button>
                     </form>
                 </div>
             </div>
@@ -410,6 +418,36 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous">
+    </script>
+
+    <script>
+        const scriptURL =
+            'https://script.google.com/macros/s/AKfycbztK_ENYhn74ETziLwGjwaJu4T302DqBMdbIo2vHMXXYtcV6TmZTq1-UWmforqjWorH/exec'
+        const form = document.forms['contact-form-portofolio'];
+        const btnKirim = document.querySelector('.btn-kirim');
+        const btnLoading = document.querySelector('.btn-loading');
+        const myAlert = document.querySelector('.myAlert');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            // ketika tombol submit diklik
+            // tampilkan tombol loading , hilangkan tombol kirim
+            btnLoading.classList.toggle('d-none');
+            btnKirim.classList.toggle('d-none');
+            fetch(scriptURL, {
+                    method: 'POST',
+                    body: new FormData(form)
+                })
+                .then(response => {
+                    // tampilkan tombol kirim , hilangkan tombol loading
+                    btnLoading.classList.toggle('d-none');
+                    btnKirim.classList.toggle('d-none');
+                    myAlert.classList.toggle('d-none');
+                    form.reset();
+                    console.log('Success!', response)
+                })
+                .catch(error => console.error('Error!', error.message))
+        })
     </script>
 
 
